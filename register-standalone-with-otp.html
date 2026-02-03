@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Password Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            max-width: 420px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .icon-bubble {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .icon-bubble svg {
+            width: 32px;
+            height: 32px;
+            stroke: white;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: flex-start;
+            gap: 10px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .alert.show { display: flex; }
+
+        .alert-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="email"]:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+        }
+
+        input[type="email"]:valid:not(:placeholder-shown) {
+            border-color: #10b981;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { width: 33%; background: #ef4444; }
+        .strength-medium { width: 66%; background: #f59e0b; }
+        .strength-strong { width: 100%; background: #10b981; }
+
+        .hint {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-secondary {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* OTP Specific Styles */
+        #otpInput {
+            font-size: 32px;
+            letter-spacing: 12px;
+            text-align: center;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .otp-info {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .otp-info p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .otp-timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #fde68a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .warning-box svg {
+            width: 24px;
+            height: 24px;
+            color: #f59e0b;
+            flex-shrink: 0;
+        }
+
+        .warning-box p {
+            font-size: 13px;
+            color: #92400e;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Registration Form -->
+        <div id="registrationStep">
+            <div class="header">
+                <div class="icon-bubble">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                </div>
+                <h1>Create Account</h1>
+                <p class="subtitle">Secure your passwords today</p>
+            </div>
+
+            <div id="errorAlert" class="alert alert-error">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <span id="errorText"></span>
+            </div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Master Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required minlength="8">
+                    <div class="password-strength">
+                        <div id="strengthBar" class="password-strength-bar"></div>
+                    </div>
+                    <p class="hint" id="strengthText">Use at least 8 characters with letters, numbers, and symbols</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Master Password</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" id="registerBtn" class="btn btn-primary">
+                    <span>Create Account</span>
+                </button>
+            </form>
+
+            <div class="warning-box">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <p><strong>Important:</strong> Your master password cannot be recovered. Store it securely!</p>
+            </div>
+
+            <div class="footer">
+                Already have an account? <a href="login-standalone-with-otp.html">Sign in</a>
+            </div>
+        </div>
+
+        <!-- OTP Verification Step -->
+        <div id="otpStep" class="hidden">
+            <div class="header">
+                <div class="icon-bubble">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h1>Check Your Email</h1>
+                <p class="subtitle">We've sent a 6-digit code to <strong id="userEmail"></strong></p>
+            </div>
+
+            <div id="otpErrorAlert" class="alert alert-error">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <span id="otpErrorText"></span>
+            </div>
+
+            <div id="otpSuccessAlert" class="alert alert-success">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span id="otpSuccessText"></span>
+            </div>
+
+            <form id="otpForm">
+                <div class="form-group">
+                    <label for="otpInput">Verification Code</label>
+                    <input type="text" id="otpInput" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required>
+                </div>
+
+                <div class="otp-info">
+                    <p>Code expires in <span class="otp-timer">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                        </svg>
+                        <span id="otpTimer">10:00</span>
+                    </span></p>
+                </div>
+
+                <button type="submit" id="verifyBtn" class="btn btn-success">
+                    <span>Verify Code</span>
+                </button>
+
+                <button type="button" id="resendBtn" class="btn btn-secondary" disabled>
+                    <span id="resendText">Resend Code (60s)</span>
+                </button>
+            </form>
+
+            <div class="footer">
+                <a href="#" id="backToRegister">← Back to registration</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let userEmail = '';
+        let userPassword = '';
+        let vaultKeyBase64 = '';
+        let encryptedVaultKey = '';
+        let salt = '';
+        let resendCooldown = 60;
+        let otpExpiryTime = 0;
+        let timerInterval = null;
+        let resendInterval = null;
+
+        // Elements
+        const registrationStep = document.getElementById('registrationStep');
+        const otpStep = document.getElementById('otpStep');
+        const form = document.getElementById('registerForm');
+        const otpForm = document.getElementById('otpForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorText = document.getElementById('errorText');
+        const otpErrorAlert = document.getElementById('otpErrorAlert');
+        const otpErrorText = document.getElementById('otpErrorText');
+        const otpSuccessAlert = document.getElementById('otpSuccessAlert');
+        const otpSuccessText = document.getElementById('otpSuccessText');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const otpInput = document.getElementById('otpInput');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+        const userEmailDisplay = document.getElementById('userEmail');
+        const otpTimerDisplay = document.getElementById('otpTimer');
+        const resendText = document.getElementById('resendText');
+        const backToRegister = document.getElementById('backToRegister');
+
+        // Helper functions
+        function showError(message) {
+            errorText.textContent = message;
+            errorAlert.classList.add('show');
+            setTimeout(() => errorAlert.classList.remove('show'), 5000);
+        }
+
+        function showOtpError(message) {
+            otpErrorText.textContent = message;
+            otpErrorAlert.classList.add('show');
+            setTimeout(() => otpErrorAlert.classList.remove('show'), 5000);
+        }
+
+        function showOtpSuccess(message) {
+            otpSuccessText.textContent = message;
+            otpSuccessAlert.classList.add('show');
+            setTimeout(() => otpSuccessAlert.classList.remove('show'), 3000);
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            strengthBar.className = 'password-strength-bar';
+            
+            if (strength < 3) {
+                strengthBar.classList.add('strength-weak');
+                strengthText.textContent = 'Weak password - add more characters and variety';
+                strengthText.style.color = '#ef4444';
+            } else if (strength < 5) {
+                strengthBar.classList.add('strength-medium');
+                strengthText.textContent = 'Medium strength - consider adding symbols';
+                strengthText.style.color = '#f59e0b';
+            } else {
+                strengthBar.classList.add('strength-strong');
+                strengthText.textContent = 'Strong password!';
+                strengthText.style.color = '#10b981';
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startOtpTimer() {
+            otpExpiryTime = Date.now() + (10 * 60 * 1000); // 10 minutes
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                const remaining = Math.max(0, Math.floor((otpExpiryTime - Date.now()) / 1000));
+                otpTimerDisplay.textContent = formatTime(remaining);
+                
+                if (remaining === 0) {
+                    clearInterval(timerInterval);
+                    showOtpError('Verification code expired. Please request a new one.');
+                }
+            }, 1000);
+        }
+
+        function startResendCooldown() {
+            resendCooldown = 60;
+            resendBtn.disabled = true;
+            
+            if (resendInterval) clearInterval(resendInterval);
+            
+            resendInterval = setInterval(() => {
+                resendCooldown--;
+                resendText.textContent = `Resend Code (${resendCooldown}s)`;
+                
+                if (resendCooldown === 0) {
+                    clearInterval(resendInterval);
+                    resendBtn.disabled = false;
+                    resendText.textContent = 'Resend Code';
+                }
+            }, 1000);
+        }
+
+        function switchToOtpStep(email) {
+            registrationStep.classList.add('hidden');
+            otpStep.classList.remove('hidden');
+            userEmailDisplay.textContent = email;
+            otpInput.value = '';
+            otpInput.focus();
+            startOtpTimer();
+            startResendCooldown();
+        }
+
+        function switchToRegistrationStep() {
+            otpStep.classList.add('hidden');
+            registrationStep.classList.remove('hidden');
+            if (timerInterval) clearInterval(timerInterval);
+            if (resendInterval) clearInterval(resendInterval);
+        }
+
+        // Event listeners
+        passwordInput.addEventListener('input', (e) => {
+            checkPasswordStrength(e.target.value);
+        });
+
+        // Only allow digits in OTP input
+        otpInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        backToRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchToRegistrationStep();
+        });
+
+        // Register form submission
+        async function handleRegister(e) {
+            e.preventDefault();
+
+            userEmail = emailInput.value;
+            userPassword = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (userPassword !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (userPassword.length < 8) {
+                showError('Password must be at least 8 characters');
+                return;
+            }
+
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<div class="spinner"></div><span>Creating Account...</span>';
+
+            try {
+                const encoder = new TextEncoder();
+                salt = userEmail; // Use email as salt
+                
+                // Hash password for authentication
+                const passwordData = encoder.encode(userPassword);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const masterPasswordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                // Derive vault key from password + salt
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    encoder.encode(userPassword),
+                    'PBKDF2',
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+                
+                const vaultKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: encoder.encode(salt),
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    true,
+                    ['encrypt', 'decrypt']
+                );
+
+                const exportedKey = await crypto.subtle.exportKey('raw', vaultKey);
+                const keyArray = Array.from(new Uint8Array(exportedKey));
+                vaultKeyBase64 = btoa(String.fromCharCode.apply(null, keyArray));
+                
+                // Encrypt vault key with master password for storage
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encryptedVaultKeyBuffer = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv },
+                    vaultKey,
+                    encoder.encode(vaultKeyBase64)
+                );
+                
+                encryptedVaultKey = btoa(
+                    String.fromCharCode.apply(null, new Uint8Array(encryptedVaultKeyBuffer))
+                ) + '.' + btoa(String.fromCharCode.apply(null, iv));
+
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: userEmail, 
+                        masterPasswordHash,
+                        encryptedVaultKey,
+                        salt
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.requiresEmailOTP) {
+                    // Switch to OTP verification step
+                    switchToOtpStep(userEmail);
+                } else if (data.success) {
+                    // Old flow (no OTP) - shouldn't happen anymore
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('vaultKey', vaultKeyBase64);
+                    window.location.href = 'dashboard-standalone.html';
+                } else {
+                    throw new Error(data.message || 'Registration failed');
+                }
+            } catch (err) {
+                showError(err.message || 'Registration failed. Please try again.');
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '<span>Create Account</span>';
+            }
+        }
+
+        // OTP verification
+        async function handleVerifyOTP(e) {
+            e.preventDefault();
+
+            const otp = otpInput.value;
+
+            if (otp.length !== 6) {
+                showOtpError('Please enter a 6-digit code');
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<div class="spinner"></div><span>Verifying...</span>';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/verify-signup-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: userEmail,
+                        otp 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Clear timers
+                    if (timerInterval) clearInterval(timerInterval);
+                    if (resendInterval) clearInterval(resendInterval);
+
+                    // Store authentication data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('vaultKey', vaultKeyBase64);
+
+                    // Show success and redirect
+                    showOtpSuccess('Email verified! Redirecting to dashboard...');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard-standalone.html';
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Verification failed');
+                }
+            } catch (err) {
+                showOtpError(err.message || 'Verification failed. Please try again.');
+            } finally {
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = '<span>Verify Code</span>';
+            }
+        }
+
+        // Resend OTP
+        async function handleResendOTP() {
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = '<div class="spinner"></div><span>Sending...</span>';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/resend-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: userEmail,
+                        purpose: 'signup'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showOtpSuccess('New code sent to your email!');
+                    startOtpTimer();
+                    startResendCooldown();
+                    otpInput.value = '';
+                    otpInput.focus();
+                } else {
+                    throw new Error(data.message || 'Failed to resend code');
+                }
+            } catch (err) {
+                showOtpError(err.message || 'Failed to resend code. Please try again.');
+            } finally {
+                resendBtn.innerHTML = '<span>Resend Code</span>';
+            }
+        }
+
+        form.addEventListener('submit', handleRegister);
+        otpForm.addEventListener('submit', handleVerifyOTP);
+        resendBtn.addEventListener('click', handleResendOTP);
+    </script>
+</body>
+</html>

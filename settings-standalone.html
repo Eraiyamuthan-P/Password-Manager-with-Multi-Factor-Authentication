@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Password Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-bubble {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #e0e7ff;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .icon-bubble svg {
+            width: 20px;
+            height: 20px;
+            stroke: #4f46e5;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+
+        .account-info {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .account-email {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .account-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #16a34a;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stats-list {
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .section-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .toggle-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .toggle-info p {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #cbd5e1;
+            border-radius: 34px;
+            transition: 0.3s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked + .slider {
+            background: #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 24px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .qr-container.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 16px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .code-display {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            margin-top: 12px;
+        }
+
+        .back-button {
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-enabled {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-disabled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .alert svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .alert-info svg {
+            stroke: #2563eb;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-title svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-message {
+            font-size: 15px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-confirm {
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-confirm:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+            animation: toastSlide 0.3s ease-out;
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .toast svg {
+            width: 20px;
+            height: 20px;
+            stroke: #10b981;
+            flex-shrink: 0;
+        }
+
+        .toast.error svg {
+            stroke: #ef4444;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="icon-bubble">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+            <div class="header-info">
+                <div class="header-title">Settings</div>
+                <div class="header-subtitle" id="userEmail">Loading...</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="settings-grid">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-title">Account Overview</div>
+                <div class="account-info">
+                    <div class="account-email" id="sidebarEmail">Loading...</div>
+                    <span class="account-status">
+                        <span class="status-dot"></span>
+                        Active
+                    </span>
+                </div>
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span class="stat-label">Member Since</span>
+                        <span class="stat-value" id="memberSince">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Face Auth</span>
+                        <span class="stat-value status-badge status-disabled" id="faceStatus">Disabled</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Two-Factor</span>
+                        <span class="stat-value status-badge status-disabled" id="2faStatus">Disabled</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Face Authentication -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <svg fill="none" stroke="#4f46e5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="section-title">Face Authentication</div>
+                        </div>
+                    </div>
+                    <div class="section-description">
+                        Use facial recognition for secure login. <strong>Note:</strong> Disabling this feature will permanently delete your face data - you'll need to re-enroll if you want to use it again.
+                    </div>
+                    
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <h4>Enable Face Login</h4>
+                            <p>Quick and secure authentication</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="faceToggle" onchange="handleFaceToggle()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="faceEnrollSection" style="display: none;">
+                        <div class="alert alert-info">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>You'll need to enroll your face first. This will redirect you to the face enrollment page.</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="enrollFace()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Enroll Face
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Two-Factor Authentication -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <svg fill="none" stroke="#10b981" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="section-title">Two-Factor Authentication</div>
+                        </div>
+                    </div>
+                    <div class="section-description">
+                        Add an extra layer of security with time-based one-time passwords (TOTP). <strong>Note:</strong> Disabling 2FA will delete your secret key - you'll need to set up a new QR code if you enable it again.
+                    </div>
+                    
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <h4>Enable 2FA</h4>
+                            <p>Requires authenticator app</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="2faToggle" onchange="handle2FAToggle()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="qrSection" class="qr-container">
+                        <h4 style="margin-bottom: 16px; color: #111827;">Scan with Authenticator App</h4>
+                        <div class="qr-placeholder">
+                            <svg width="180" height="180" fill="#e5e7eb" viewBox="0 0 24 24">
+                                <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+                            </svg>
+                        </div>
+                        <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Or enter this code manually:</p>
+                        <div class="code-display" id="secretCode">XXXX XXXX XXXX XXXX</div>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="verify2FA()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Verify & Enable
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Dashboard Button -->
+        <button class="btn btn-secondary back-button" onclick="window.location.href='dashboard-standalone.html'">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+        </button>
+    </main>
+
+    <script>
+        let userData = {
+            email: 'user@example.com',
+            faceEnabled: false,
+            twoFAEnabled: false,
+            memberSince: new Date().toLocaleDateString()
+        };
+
+        async function loadUserData() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login-standalone-with-otp.html';
+                return;
+            }
+
+            try {
+                // Fetch user data from backend
+                const response = await fetch('http://localhost:5000/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    userData.email = data.user.email;
+                    userData.faceEnabled = data.user.faceAuthEnabled || false;
+                    userData.twoFAEnabled = data.user.twoFactorEnabled || false;
+                    userData.memberSince = new Date(data.user.createdAt).toLocaleDateString();
+
+                    document.getElementById('userEmail').textContent = userData.email;
+                    document.getElementById('sidebarEmail').textContent = userData.email;
+                    document.getElementById('memberSince').textContent = userData.memberSince;
+                    
+                    // Update statuses
+                    updateStatus('faceStatus', userData.faceEnabled);
+                    updateStatus('2faStatus', userData.twoFAEnabled);
+                    
+                    document.getElementById('faceToggle').checked = userData.faceEnabled;
+                    document.getElementById('2faToggle').checked = userData.twoFAEnabled;
+
+                    // Update localStorage
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                } else {
+                    throw new Error('Failed to load user data');
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // Fallback to localStorage
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.email) {
+                    userData.email = user.email;
+                    userData.faceEnabled = user.faceAuthEnabled || false;
+                    userData.twoFAEnabled = user.twoFactorEnabled || false;
+                    
+                    document.getElementById('userEmail').textContent = userData.email;
+                    document.getElementById('sidebarEmail').textContent = userData.email;
+                    document.getElementById('memberSince').textContent = userData.memberSince;
+                    
+                    updateStatus('faceStatus', userData.faceEnabled);
+                    updateStatus('2faStatus', userData.twoFAEnabled);
+                    
+                    document.getElementById('faceToggle').checked = userData.faceEnabled;
+                    document.getElementById('2faToggle').checked = userData.twoFAEnabled;
+                } else {
+                    window.location.href = 'login-standalone-with-otp.html';
+                }
+            }
+        }
+
+        function updateStatus(elementId, enabled) {
+            const element = document.getElementById(elementId);
+            element.textContent = enabled ? 'Enabled' : 'Disabled';
+            element.className = 'stat-value status-badge ' + (enabled ? 'status-enabled' : 'status-disabled');
+        }
+
+        async function handleFaceToggle() {
+            const enabled = document.getElementById('faceToggle').checked;
+            
+            if (enabled) {
+                // Show enrollment section
+                document.getElementById('faceEnrollSection').style.display = 'block';
+            } else {
+                // Disable face auth - show confirmation modal
+                showConfirmModal(
+                    'Disable Face Authentication?',
+                    '⚠️ This will permanently delete your enrolled face data. If you enable face authentication again later, you will need to scan your face and re-enroll from scratch. Are you sure you want to continue?',
+                    async () => {
+                        try {
+                            const token = localStorage.getItem('token');
+                            const response = await fetch('http://localhost:5000/api/auth/face/disable', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                userData.faceEnabled = false;
+                                updateStatus('faceStatus', false);
+                                document.getElementById('faceEnrollSection').style.display = 'none';
+                                showInfoModal('Face Auth Disabled', 'Your face authentication has been disabled and all face data has been deleted. To use face authentication again, you will need to re-enroll your face.');
+                                
+                                // Update localStorage
+                                const user = JSON.parse(localStorage.getItem('user'));
+                                user.faceAuthEnabled = false;
+                                localStorage.setItem('user', JSON.stringify(user));
+                            } else {
+                                throw new Error(data.message || 'Failed to disable face auth');
+                            }
+                        } catch (error) {
+                            showErrorModal('Error', 'Failed to disable face authentication: ' + error.message);
+                            document.getElementById('faceToggle').checked = true;
+                        }
+                    },
+                    () => {
+                        document.getElementById('faceToggle').checked = true;
+                    }
+                );
+            }
+        }
+
+        function enrollFace() {
+            // Redirect to face enrollment page
+            window.location.href = 'face-auth-standalone.html?mode=enroll';
+        }
+
+        async function handle2FAToggle() {
+            const enabled = document.getElementById('2faToggle').checked;
+            const qrSection = document.getElementById('qrSection');
+            
+            if (enabled) {
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch('http://localhost:5000/api/auth/2fa/setup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Show QR code
+                        const qrPlaceholder = document.querySelector('.qr-placeholder');
+                        qrPlaceholder.innerHTML = `<img src="${data.qrCode}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
+                        document.getElementById('secretCode').textContent = data.secret.match(/.{1,4}/g).join(' ');
+                        qrSection.classList.add('show');
+                    } else {
+                        throw new Error(data.message || '2FA setup failed');
+                    }
+                } catch (error) {
+                    showErrorModal('Setup Error', 'Failed to set up 2FA: ' + error.message);
+                    document.getElementById('2faToggle').checked = false;
+                }
+            } else {
+                // Disable 2FA - show confirmation modal
+                showConfirmModal(
+                    'Disable Two-Factor Authentication?',
+                    '⚠️ This will permanently delete your 2FA secret key from our servers. If you enable 2FA again later, you will need to set up a new authenticator app entry with a new QR code. Your current 2FA codes will stop working. Are you sure you want to continue?',
+                    async () => {
+                        try {
+                            const token = localStorage.getItem('token');
+                            const response = await fetch('http://localhost:5000/api/auth/2fa/disable', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                userData.twoFAEnabled = false;
+                                updateStatus('2faStatus', false);
+                                qrSection.classList.remove('show');
+                                showInfoModal('2FA Disabled', 'Two-factor authentication has been disabled and your secret key has been deleted. To use 2FA again, you will need to scan a new QR code and add it to your authenticator app.');
+                                
+                                // Update localStorage
+                                const user = JSON.parse(localStorage.getItem('user'));
+                                user.twoFactorEnabled = false;
+                                localStorage.setItem('user', JSON.stringify(user));
+                            } else {
+                                throw new Error(data.message || 'Failed to disable 2FA');
+                            }
+                        } catch (error) {
+                            showErrorModal('Error', 'Failed to disable 2FA: ' + error.message);
+                            document.getElementById('2faToggle').checked = true;
+                        }
+                    },
+                    () => {
+                        document.getElementById('2faToggle').checked = true;
+                    }
+                );
+            }
+        }
+
+        async function verify2FA() {
+            showInputModal(
+                'Verify Two-Factor Authentication',
+                'Enter the 6-digit code from your authenticator app:',
+                'Verification Code',
+                async (code) => {
+                    if (!code || code.length !== 6) {
+                        closeInputModal();
+                        showErrorModal('Invalid Code', 'Please enter a valid 6-digit code.');
+                        document.getElementById('2faToggle').checked = false;
+                        return;
+                    }
+
+                    try {
+                        const authToken = localStorage.getItem('token');
+                        if (!authToken) {
+                            throw new Error('Not authenticated. Please log in again.');
+                        }
+
+                        const submitBtn = document.getElementById('inputSubmitBtn');
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<div class="spinner"></div><span>Verifying...</span>';
+
+                        console.log('Sending 2FA verification request');
+                        console.log('- Code length:', code.length);
+                        console.log('- Code value:', code);
+                        console.log('- Auth token exists:', !!authToken);
+                        
+                        const requestBody = { token: code };
+                        console.log('- Request body:', requestBody);
+                        
+                        const response = await fetch('http://localhost:5000/api/auth/2fa/verify', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${authToken}`
+                            },
+                            body: JSON.stringify(requestBody)
+                        });
+
+                        console.log('Response status:', response.status);
+                        
+                        // Check if response is ok
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({ message: 'Server error' }));
+                            console.error('Error response:', errorData);
+                            throw new Error(errorData.message || `Server error: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            userData.twoFAEnabled = true;
+                            updateStatus('2faStatus', true);
+                            document.getElementById('qrSection').classList.remove('show');
+                            closeInputModal();
+                            showInfoModal('Success!', 'Two-factor authentication has been enabled successfully!');
+                            
+                            // Update localStorage
+                            const user = JSON.parse(localStorage.getItem('user'));
+                            user.twoFactorEnabled = true;
+                            localStorage.setItem('user', JSON.stringify(user));
+                        } else {
+                            throw new Error(data.message || 'Invalid verification code');
+                        }
+                    } catch (error) {
+                        console.error('2FA verification error:', error);
+                        
+                        // Reset button state
+                        const submitBtn = document.getElementById('inputSubmitBtn');
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<span>Submit</span>';
+                        }
+                        
+                        closeInputModal();
+                        showErrorModal('Verification Failed', error.message || 'Invalid verification code. Please try again.');
+                        document.getElementById('2faToggle').checked = false;
+                        document.getElementById('qrSection').classList.remove('show');
+                    }
+                },
+                () => {
+                    document.getElementById('2faToggle').checked = false;
+                    document.getElementById('qrSection').classList.remove('show');
+                }
+            );
+        }
+
+        // Modal Helper Functions
+        let confirmCallback = null;
+        let cancelCallback = null;
+        let inputCallback = null;
+        let inputCancelCallback = null;
+
+        function showConfirmModal(title, message, onConfirm, onCancel) {
+            document.getElementById('confirmTitle').querySelector('span').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            confirmCallback = onConfirm;
+            cancelCallback = onCancel;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            if (cancelCallback) {
+                cancelCallback();
+                cancelCallback = null;
+            }
+            confirmCallback = null;
+        }
+
+        async function confirmAction() {
+            if (confirmCallback) {
+                const btn = document.getElementById('confirmBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
+                
+                await confirmCallback();
+                
+                btn.disabled = false;
+                btn.innerHTML = '<span>Confirm</span>';
+                closeConfirmModal();
+            }
+        }
+
+        function showInputModal(title, message, label, onSubmit, onCancel) {
+            document.getElementById('inputTitle').textContent = title;
+            document.getElementById('inputMessage').textContent = message;
+            document.getElementById('inputLabel').textContent = label;
+            document.getElementById('inputField').value = '';
+            inputCallback = onSubmit;
+            inputCancelCallback = onCancel;
+            document.getElementById('inputModal').classList.add('active');
+            setTimeout(() => document.getElementById('inputField').focus(), 100);
+        }
+
+        function closeInputModal() {
+            document.getElementById('inputModal').classList.remove('active');
+            if (inputCancelCallback) {
+                inputCancelCallback();
+                inputCancelCallback = null;
+            }
+            inputCallback = null;
+        }
+
+        async function submitInput() {
+            if (inputCallback) {
+                const value = document.getElementById('inputField').value;
+                await inputCallback(value);
+            }
+        }
+
+        function showInfoModal(title, message) {
+            document.getElementById('infoTitle').querySelector('span').textContent = title;
+            document.getElementById('infoMessage').textContent = message;
+            document.getElementById('infoModal').classList.add('active');
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').classList.remove('active');
+        }
+
+        function showErrorModal(title, message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (type === 'error' ? ' error' : '');
+            toast.innerHTML = `
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${type === 'success' ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}" />
+                </svg>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'toastSlide 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Close modals when clicking outside
+            const confirmModal = document.getElementById('confirmModal');
+            if (confirmModal) {
+                confirmModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'confirmModal') closeConfirmModal();
+                });
+            }
+
+            const inputModal = document.getElementById('inputModal');
+            if (inputModal) {
+                inputModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'inputModal') closeInputModal();
+                });
+            }
+
+            const infoModal = document.getElementById('infoModal');
+            if (infoModal) {
+                infoModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'infoModal') closeInfoModal();
+                });
+            }
+
+            const errorModal = document.getElementById('errorModal');
+            if (errorModal) {
+                errorModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'errorModal') closeErrorModal();
+                });
+            }
+
+            // Handle Enter key in input modal
+            const inputField = document.getElementById('inputField');
+            if (inputField) {
+                inputField.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitInput();
+                    }
+                });
+            }
+
+            // Load user data
+            loadUserData();
+        });
+    </script>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="confirmTitle">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>Confirm Action</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="confirmMessage">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn-confirm btn-danger" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Modal (for 2FA code) -->
+    <div class="modal-overlay" id="inputModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span id="inputTitle">Enter Code</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="inputMessage">Please enter the required information:</p>
+                <label class="form-label" id="inputLabel">Code</label>
+                <input type="text" class="form-input" id="inputField" placeholder="000000" maxlength="6" pattern="[0-9]*" inputmode="numeric">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeInputModal()">Cancel</button>
+                <button class="btn-confirm" id="inputSubmitBtn" onclick="submitInput()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Info Modal -->
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="infoTitle">
+                    <svg fill="none" stroke="#10b981" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Success</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="infoMessage">Operation completed successfully!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-confirm" onclick="closeInfoModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg fill="none" stroke="#ef4444" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Error</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="errorMessage">An error occurred.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-confirm" onclick="closeErrorModal()">OK</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
