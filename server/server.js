@@ -10,10 +10,13 @@ const app = express();
 // Security Middleware
 app.use(helmet());
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:8080', 'http://127.0.0.1:8080'],
+  origin: [
+    'http://localhost:8080',
+    'http://localhost:3000',
+    'https://eraiyamuthan-p.github.io'  // Replace with your GitHub Pages URL
+  ],
   credentials: true
 }));
-app.use(express.json({ limit: '10mb' }));
 
 // Rate Limiting
 const limiter = rateLimit({
