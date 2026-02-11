@@ -54,7 +54,7 @@ def enroll():
         # Use Facenet512 with opencv for lower memory usage on Render
         reps = DeepFace.represent(
             img_path=img,
-            model_name='Facenet512',
+            model_name='Facenet',
             detector_backend='opencv',
             enforce_detection=True
         )
@@ -90,7 +90,7 @@ def verify():
         # Use same model as enrollment: Facenet512 with opencv
         reps = DeepFace.represent(
             img_path=img,
-            model_name='Facenet512',
+            model_name='Facenet',
             detector_backend='opencv',
             enforce_detection=True
         )
