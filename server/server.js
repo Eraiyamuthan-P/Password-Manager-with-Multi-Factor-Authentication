@@ -9,13 +9,21 @@ const app = express();
 
 // Security Middleware
 app.use(helmet());
+
+// Body Parser - MUST come before CORS for preflight to work
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// CORS Configuration
 app.use(cors({
   origin: [
     'http://localhost:8080',
     'http://localhost:3000',
     'https://eraiyamuthan-p.github.io'  // Replace with your GitHub Pages URL
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate Limiting
