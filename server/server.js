@@ -7,6 +7,10 @@ require('dotenv').config();
 
 const app = express();
 
+// Trust proxy - Required for Render deployment
+// Allows rate limiter to see real user IPs behind Render's load balancer
+app.set('trust proxy', 1);
+
 // Security Middleware
 // Change app.use(helmet()); to:
 app.use(helmet({
