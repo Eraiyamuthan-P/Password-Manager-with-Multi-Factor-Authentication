@@ -733,19 +733,24 @@
     verifyBtn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
 
     try {
-        // Capture image from video
+        // --- MEMORY OPTIMIZATION START ---
+        // Create a small canvas instead of using full video resolution
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        canvas.width = 320;   // Downsized for Render RAM limits
+        canvas.height = 240;  
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0);
-        const imageData = canvas.toDataURL('image/jpeg', 0.8); // 0.8 quality reduces payload size
+        
+        // Draw the video frame into the smaller canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Lower JPEG quality (0.5) to further reduce the payload size
+        const imageData = canvas.toDataURL('image/jpeg', 0.5); 
+        // --- MEMORY OPTIMIZATION END ---
 
         const email = userEmail || JSON.parse(localStorage.getItem('user') || '{}').email;
         const token = localStorage.getItem('token');
 
         // Step 1: Extract face descriptor from Python backend
-        // Use 'include' for credentials to satisfy your Python CORS setup
         const res1 = await fetch(`${DEEPFACE_URL}/api/enroll`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -756,7 +761,7 @@
         const result1 = await res1.json();
         
         if (!res1.ok || !result1.faceDescriptor) {
-            throw new Error(result1.error || 'Face not detected. Ensure your face is clear and well-lit.');
+            throw new Error(result1.error || 'Face not detected. Ensure your face is clear.');
         }
 
         // Step 2: Call Node.js backend based on mode
