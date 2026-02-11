@@ -114,17 +114,7 @@ def verify():
         print("Verify error:", traceback.format_exc())
         return jsonify({'error': 'Face not detected. Try again with a clear front photo.'}), 400
 
-
-# ---------------------- CORS FIX ----------------------
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
-    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
-    return response
-
-
 if __name__ == '__main__':
-    # Disable auto-reloader to prevent infinite restart loops
-    # use_reloader=False prevents watchdog from monitoring file changes
-    app.run(host='0.0.0.0', port=5001, debug=False, use_reloader=False)
+    import os
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
