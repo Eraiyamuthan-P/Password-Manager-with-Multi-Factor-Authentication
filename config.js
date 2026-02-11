@@ -12,7 +12,7 @@ const CONFIG = {
     PRODUCTION: {
         // Replace these with your actual deployed backend URLs
         API_BASE_URL: 'https://password-manager-with-multi-factor.onrender.com',  // Your Node.js backend
-        DEEPFACE_URL: 'https://password-manager-deepface.onrender.com'      // Your Python backend
+        DEEPFACE_URL: 'https://epscord-password-manager-deepface.hf.space'      // Your Python backend
     }
 };
 
