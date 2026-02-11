@@ -55,12 +55,12 @@ def enroll():
     print("Image shape (enroll):", img.shape)
 
     try:
-        # Use RetinaFace detector for best accuracy
+        # Use Facenet512 with opencv for lower memory usage on Render
         reps = DeepFace.represent(
-        img_path=img,
-        model_name='ArcFace',
-        detector_backend='opencv', # Much lighter and faster for Render
-        enforce_detection=True
+            img_path=img,
+            model_name='Facenet512',
+            detector_backend='opencv',
+            enforce_detection=True
         )
 
         embedding = np.array(reps[0]['embedding'], dtype=np.float32)
@@ -91,11 +91,12 @@ def verify():
     print("Image shape (verify):", img.shape)
 
     try:
+        # Use same model as enrollment: Facenet512 with opencv
         reps = DeepFace.represent(
-        img_path=img,
-        model_name='ArcFace',
-        detector_backend='opencv', # Much lighter and faster for Render
-        enforce_detection=True
+            img_path=img,
+            model_name='Facenet512',
+            detector_backend='opencv',
+            enforce_detection=True
         )
 
         current_embedding = np.array(reps[0]['embedding'], dtype=np.float32)
@@ -105,7 +106,7 @@ def verify():
         distance = np.linalg.norm(current_embedding - stored_embedding)
         print("Face distance:", distance)
 
-        threshold = 0.8  # lower = stricter
+        threshold = 10.0  # Facenet512 uses different scale than ArcFace
         match = distance < threshold
 
         return jsonify({'success': match, 'distance': float(distance)})
