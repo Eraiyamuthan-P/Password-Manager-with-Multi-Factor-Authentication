@@ -724,119 +724,88 @@
 
         // Verify/Enroll face
         async function verifyFace() {
-            if (!video.videoWidth || !video.videoHeight) {
-                showError('Camera not ready. Please wait a moment and try again.');
-                return;
-            }
+    if (!video.videoWidth || !video.videoHeight) {
+        showError('Camera not ready. Please wait a moment and try again.');
+        return;
+    }
 
-            verifyBtn.disabled = true;
-            verifyBtn.innerHTML = '<div class="spinner"></div><span>' + (mode === 'enroll' ? 'Enrolling...' : 'Verifying Face...') + '</span>';
+    verifyBtn.disabled = true;
+    verifyBtn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
 
-            try {
-                // Capture image from video
-                const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(video, 0, 0);
-                const imageData = canvas.toDataURL('image/jpeg');
+    try {
+        // Capture image from video
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL('image/jpeg', 0.8); // 0.8 quality reduces payload size
 
-                const email = userEmail || JSON.parse(localStorage.getItem('user') || '{}').email;
-                const token = localStorage.getItem('token');
+        const email = userEmail || JSON.parse(localStorage.getItem('user') || '{}').email;
+        const token = localStorage.getItem('token');
 
-                console.log('Mode:', mode);
-                console.log('Email:', email);
+        // Step 1: Extract face descriptor from Python backend
+        // Use 'include' for credentials to satisfy your Python CORS setup
+        const res1 = await fetch(`${DEEPFACE_URL}/api/enroll`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: imageData }),
+            credentials: 'include' 
+        });
 
-                // Step 1: Extract face descriptor from Python backend
-                // Always use /api/enroll endpoint - it just extracts the face descriptor
-                const res1 = await fetch(`${DEEPFACE_URL}/api/enroll`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image: imageData })
-                });
-
-                console.log('Python response status:', res1.status);
-                
-                const result1 = await res1.json();
-                console.log('Python response:', result1);
-                
-                if (!res1.ok || !result1.success) {
-                    throw new Error(result1.error || 'Face extraction failed');
-                }
-
-                // Step 2: Call Node.js backend based on mode
-                if (mode === 'enroll') {
-                    // ENROLL MODE: Save face template to user account
-                    const res2 = await fetch(`${API_BASE_URL}/api/auth/face/enroll`, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ 
-                            faceDescriptor: result1.faceDescriptor 
-                        })
-                    });
-
-                    const data = await res2.json();
-                    if (!data.success) {
-                        throw new Error(data.message || 'Face enrollment failed');
-                    }
-
-                    // Success! Update user in localStorage
-                    const user = JSON.parse(localStorage.getItem('user') || '{}');
-                    user.faceAuthEnabled = true;
-                    localStorage.setItem('user', JSON.stringify(user));
-
-                    // Redirect to settings
-                    stopCamera();
-                    alert('Face enrolled successfully! Redirecting to settings...');
-                    window.location.href = 'settings-standalone.html';
-                    
-                } else {
-                    // VERIFY MODE: Authenticate with face
-                    const res2 = await fetch(`${API_BASE_URL}/api/auth/face/verify`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            email: email,
-                            faceDescriptor: result1.faceDescriptor 
-                        })
-                    });
-
-                    const data = await res2.json();
-
-                    if (data.success) {
-                        // Store authentication data
-                        localStorage.setItem('token', data.token);
-                        if (data.user) {
-                            localStorage.setItem('user', JSON.stringify(data.user));
-                            if (data.user.salt) localStorage.setItem('salt', data.user.salt);
-                        }
-
-                        // Stop camera and show password screen
-                        stopCamera();
-                        scanScreen.classList.add('hidden');
-                        passwordScreen.classList.add('show');
-                    } else {
-                        throw new Error(data.message || 'Face verification failed');
-                    }
-                }
-            } catch (err) {
-                console.error('Verification error:', err);
-                showError(err.message || 'Face verification failed. Please try again.');
-            } finally {
-                verifyBtn.disabled = false;
-                const buttonText = mode === 'enroll' ? 'Enroll My Face' : 'Verify My Face';
-                verifyBtn.innerHTML = `
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <span>${buttonText}</span>
-                `;
-            }
+        const result1 = await res1.json();
+        
+        if (!res1.ok || !result1.faceDescriptor) {
+            throw new Error(result1.error || 'Face not detected. Ensure your face is clear and well-lit.');
         }
+
+        // Step 2: Call Node.js backend based on mode
+        const endpoint = mode === 'enroll' ? '/api/auth/face/enroll' : '/api/auth/face/verify';
+        const nodePayload = mode === 'enroll' 
+            ? { faceDescriptor: result1.faceDescriptor }
+            : { email: email, faceDescriptor: result1.faceDescriptor };
+
+        const res2 = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(nodePayload),
+            credentials: 'include'
+        });
+
+        const data = await res2.json();
+
+        if (data.success) {
+            if (mode === 'enroll') {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                user.faceAuthEnabled = true;
+                localStorage.setItem('user', JSON.stringify(user));
+                stopCamera();
+                alert('Face enrolled successfully!');
+                window.location.href = 'settings-standalone.html';
+            } else {
+                localStorage.setItem('token', data.token);
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    if (data.user.salt) localStorage.setItem('salt', data.user.salt);
+                }
+                stopCamera();
+                scanScreen.classList.add('hidden');
+                passwordScreen.classList.add('show');
+            }
+        } else {
+            throw new Error(data.message || 'Face authentication failed');
+        }
+    } catch (err) {
+        console.error('Final Error:', err);
+        showError(err.message);
+    } finally {
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = `<span>${mode === 'enroll' ? 'Enroll My Face' : 'Verify My Face'}</span>`;
+    }
+}
 
         // Handle password submission
         async function handlePasswordSubmit(e) {
