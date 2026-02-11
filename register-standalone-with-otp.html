@@ -659,7 +659,7 @@
                     String.fromCharCode.apply(null, new Uint8Array(encryptedVaultKeyBuffer))
                 ) + '.' + btoa(String.fromCharCode.apply(null, iv));
 
-                const response = await fetch('http://localhost:5000/api/auth/register', {
+                const response = await fetch(\${API_BASE_URL}/api/auth/register, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -707,7 +707,7 @@
             verifyBtn.innerHTML = '<div class="spinner"></div><span>Verifying...</span>';
 
             try {
-                const response = await fetch('http://localhost:5000/api/auth/verify-signup-otp', {
+                const response = await fetch(\${API_BASE_URL}/api/auth/verify-signup-otp, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -750,7 +750,7 @@
             resendBtn.innerHTML = '<div class="spinner"></div><span>Sending...</span>';
 
             try {
-                const response = await fetch('http://localhost:5000/api/auth/resend-otp', {
+                const response = await fetch(\${API_BASE_URL}/api/auth/resend-otp, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
