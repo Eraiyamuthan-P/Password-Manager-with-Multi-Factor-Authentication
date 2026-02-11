@@ -703,7 +703,8 @@
                     body: JSON.stringify({ 
                         email: userEmail,
                         masterPasswordHash
-                    })
+                    }),
+                    credentials: 'include'
                 });
 
                 const data = await response.json();
@@ -782,7 +783,8 @@
                     body: JSON.stringify({ 
                         email: userEmail,
                         otp 
-                    })
+                    }),
+                    credentials: 'include'
                 });
 
                 const data = await response.json();
@@ -853,7 +855,8 @@
                     body: JSON.stringify({ 
                         email: userEmail,
                         purpose: 'login'
-                    })
+                    }),
+                    credentials: 'include'
                 });
 
                 const data = await response.json();
@@ -911,7 +914,8 @@
                         email, 
                         masterPasswordHash,
                         twoFactorToken: code 
-                    })
+                    }),
+                    credentials: 'include'
                 });
 
                 const loginData = await loginRes.json();
