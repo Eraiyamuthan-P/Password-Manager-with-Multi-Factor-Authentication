@@ -4,7 +4,7 @@
 const CONFIG = {
     // For local development
     LOCAL: {
-        API_BASE_URL: 'http://localhost:5000/api',
+        API_BASE_URL: 'http://localhost:5000',
         DEEPFACE_URL: 'http://localhost:5001'
     },
     
