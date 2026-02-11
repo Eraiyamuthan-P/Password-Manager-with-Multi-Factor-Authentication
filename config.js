@@ -11,8 +11,8 @@ const CONFIG = {
     // For production (GitHub Pages)
     PRODUCTION: {
         // Replace these with your actual deployed backend URLs
-        API_BASE_URL: 'https://your-backend.onrender.com/api',  // Your Node.js backend
-        DEEPFACE_URL: 'https://your-deepface.onrender.com'      // Your Python backend
+        API_BASE_URL: 'https://password-manager-with-multi-factor.onrender.com/api',  // Your Node.js backend
+        DEEPFACE_URL: 'https://password-manager-deepface.onrender.com'      // Your Python backend
     }
 };
 
