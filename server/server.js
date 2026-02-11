@@ -8,7 +8,10 @@ require('dotenv').config();
 const app = express();
 
 // Security Middleware
-app.use(helmet());
+// Change app.use(helmet()); to:
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Body Parser - MUST come before CORS for preflight to work
 app.use(express.json({ limit: '10mb' }));
