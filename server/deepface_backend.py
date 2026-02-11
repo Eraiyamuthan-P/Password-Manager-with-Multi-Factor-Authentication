@@ -9,18 +9,16 @@ import traceback
 app = Flask(__name__)
 
 # CORS Configuration
-CORS(app, 
-     resources={r"/*": {
-         "origins": [
-             "http://localhost:8080",
-             "http://localhost:3000", 
-             "https://eraiyamuthan-p.github.io"
-         ],
-         "methods": ["GET", "POST", "OPTIONS"],
-         "allow_headers": ["Content-Type", "Authorization"],
-         "supports_credentials": True
-     }}
-)
+# 1. Update the CORS config at the top
+CORS(app, resources={r"/api/*": {
+    "origins": ["https://eraiyamuthan-p.github.io"],
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True
+}})
+
+# 2. DELETE the entire @app.after_request block. 
+# Flask-CORS handles this automatically and better.
 
 # ---------------------- HEALTH CHECK ----------------------
 @app.route('/health', methods=['GET'])
