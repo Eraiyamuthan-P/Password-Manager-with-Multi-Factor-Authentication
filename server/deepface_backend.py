@@ -57,10 +57,10 @@ def enroll():
     try:
         # Use RetinaFace detector for best accuracy
         reps = DeepFace.represent(
-            img_path=img,
-            model_name='ArcFace',
-            detector_backend='retinaface',
-            enforce_detection=True
+        img_path=img,
+        model_name='ArcFace',
+        detector_backend='opencv', # Much lighter and faster for Render
+        enforce_detection=True
         )
 
         embedding = np.array(reps[0]['embedding'], dtype=np.float32)
@@ -92,10 +92,10 @@ def verify():
 
     try:
         reps = DeepFace.represent(
-            img_path=img,
-            model_name='ArcFace',
-            detector_backend='retinaface',
-            enforce_detection=True
+        img_path=img,
+        model_name='ArcFace',
+        detector_backend='opencv', # Much lighter and faster for Render
+        enforce_detection=True
         )
 
         current_embedding = np.array(reps[0]['embedding'], dtype=np.float32)
