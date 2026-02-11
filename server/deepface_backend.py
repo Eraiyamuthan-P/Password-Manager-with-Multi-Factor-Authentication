@@ -7,7 +7,20 @@ import base64
 import traceback
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+# CORS Configuration
+CORS(app, 
+     resources={r"/*": {
+         "origins": [
+             "http://localhost:8080",
+             "http://localhost:3000", 
+             "https://eraiyamuthan-p.github.io"
+         ],
+         "methods": ["GET", "POST", "OPTIONS"],
+         "allow_headers": ["Content-Type", "Authorization"],
+         "supports_credentials": True
+     }}
+)
 
 
 # Helper function to decode base64 → OpenCV image
