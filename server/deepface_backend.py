@@ -14,7 +14,8 @@ CORS(app,
          "origins": [
              "http://localhost:8080",
              "http://localhost:3000", 
-             "https://eraiyamuthan-p.github.io"
+             "https://eraiyamuthan-p.github.io",
+             "https://eraiyamuthan-p.github.io/Password-Manager-with-Multi-Factor-Authentication"
          ],
          "methods": ["GET", "POST", "OPTIONS"],
          "allow_headers": ["Content-Type", "Authorization"],
