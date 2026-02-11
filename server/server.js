@@ -19,7 +19,6 @@ app.use(cors({
   origin: [
     'http://localhost:8080',
     'http://localhost:3000',
-    'https://eraiyamuthan-p.github.io',
     'https://eraiyamuthan-p.github.io/Password-Manager-with-Multi-Factor-Authentication'
   ],
   credentials: true,
