@@ -28,12 +28,6 @@ def health():
     return jsonify({'status': 'ok', 'message': 'DeepFace backend is running'})
 
 
-# ---------------------- HEALTH CHECK ----------------------
-@app.route('/health', methods=['GET'])
-def health():
-    return jsonify({'status': 'ok', 'message': 'DeepFace backend is running'})
-
-
 # Helper function to decode base64 → OpenCV image
 def decode_base64_image(data):
     try:
