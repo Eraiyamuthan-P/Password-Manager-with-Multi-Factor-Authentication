@@ -750,7 +750,7 @@
 
                 // Step 1: Extract face descriptor from Python backend
                 // Always use /api/enroll endpoint - it just extracts the face descriptor
-                const res1 = await fetch('http://localhost:5001/api/enroll', {
+                const res1 = await fetch(\${DEEPFACE_URL}/api/enroll, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ image: imageData })
@@ -768,7 +768,7 @@
                 // Step 2: Call Node.js backend based on mode
                 if (mode === 'enroll') {
                     // ENROLL MODE: Save face template to user account
-                    const res2 = await fetch('http://localhost:5000/api/auth/face/enroll', {
+                    const res2 = await fetch(\${API_BASE_URL}/api/auth/face/enroll, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
@@ -796,7 +796,7 @@
                     
                 } else {
                     // VERIFY MODE: Authenticate with face
-                    const res2 = await fetch('http://localhost:5000/api/auth/face/verify', {
+                    const res2 = await fetch(\${API_BASE_URL}/api/auth/face/verify, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
